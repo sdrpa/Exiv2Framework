@@ -10,16 +10,11 @@
 #include <iostream>
 #include <iomanip>
 
-typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
-   Exiv2MetadataExif = 1,
-   Exiv2MetadataXmp
-};
-
 @interface FLTImageMetadata () {
-   Exiv2::Image::AutoPtr image;
-   Exiv2::ExifData exifData;
-   Exiv2::XmpData xmpData;
-   Exiv2::IptcData iptcData;
+   Exiv2::Image::AutoPtr _image;
+   Exiv2::ExifData _exifData;
+   Exiv2::XmpData _xmpData;
+   Exiv2::IptcData _iptcData;
 }
 @end
 
@@ -29,13 +24,13 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
    self = [super init];
    if (self) {
       NSString *imagePath = [imageURL path];
-      image = Exiv2::ImageFactory::open([imagePath UTF8String]);
-      assert(image.get() != 0);
-      image->readMetadata();
+      _image = Exiv2::ImageFactory::open([imagePath UTF8String]);
+      assert(_image.get() != 0);
+      _image->readMetadata();
       
-      exifData = image->exifData();
-      xmpData = image->xmpData();
-      iptcData = image->iptcData();
+      _exifData = _image->exifData();
+      _xmpData = _image->xmpData();
+      _iptcData = _image->iptcData();
    }
    return self;
 }
@@ -45,8 +40,8 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
 */
 - (NSArray *)exifKeys {
    NSMutableArray *mutableArray = [NSMutableArray array];
-   for (Exiv2::ExifData::const_iterator md = exifData.begin();
-        md != exifData.end(); ++md) {
+   for (Exiv2::ExifData::const_iterator md = _exifData.begin();
+        md != _exifData.end(); ++md) {
       [mutableArray addObject:[NSString stringWithUTF8String:md->key().c_str()]];
    }
    return [mutableArray copy];
@@ -57,35 +52,63 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
  */
 - (NSArray *)xmpKeys {
    NSMutableArray *mutableArray = [NSMutableArray array];
-   for (Exiv2::XmpData::const_iterator md = xmpData.begin();
-        md != xmpData.end(); ++md) {
+   for (Exiv2::XmpData::const_iterator md = _xmpData.begin();
+        md != _xmpData.end(); ++md) {
       [mutableArray addObject:[NSString stringWithUTF8String:md->key().c_str()]];
    }
    return [mutableArray copy];
 }
 
 /**
- Returns array of available XMP properties inside the image
+ Returns array of available IPTC properties inside the image
  */
 - (NSArray *)iptcKeys {
    NSMutableArray *mutableArray = [NSMutableArray array];
-   for (Exiv2::IptcData::const_iterator md = iptcData.begin();
-        md != iptcData.end(); ++md) {
+   for (Exiv2::IptcData::const_iterator md = _iptcData.begin();
+        md != _iptcData.end(); ++md) {
       [mutableArray addObject:[NSString stringWithUTF8String:md->key().c_str()]];
    }
    return [mutableArray copy];
 }
 
+/**
+ Return value for metadata property
+ */
+- (id)valueForKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType {
+   switch (metadataType) {
+      case Exiv2MetadataExif:
+         return [self valueForExifMetadata:_exifData[key.UTF8String]];
+      case Exiv2MetadataXmp:
+         return nil;
+      case Exiv2MetadataIptc:
+         return nil;
+      default:
+         return nil;
+   }
+}
+
+- (id)valueForExifMetadata:(Exiv2::Exifdatum)metadatum {
+   const char *typeName = metadatum.typeName();
+   if (strcmp(typeName, "Ascii") == 0) {
+      return [NSString stringWithFormat:@"%s", metadatum.toString().c_str()];
+   }
+   else if ((strcmp(typeName, "Short") == 0) ||
+            (strcmp(typeName, "Long") == 0)){
+      return @(metadatum.toLong());
+   }
+   return nil;
+}
+
 #pragma mark -
 
 - (void)printExif {
-   if (exifData.empty()) {
+   if (_exifData.empty()) {
       NSLog(@"No EXIF data found in the file");
       return;
    }
    
-   Exiv2::ExifData::const_iterator end = exifData.end();
-   for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i) {
+   Exiv2::ExifData::const_iterator end = _exifData.end();
+   for (Exiv2::ExifData::const_iterator i = _exifData.begin(); i != end; ++i) {
       const char* tn = i->typeName();
       std::cout << std::setw(44) << std::setfill(' ') << std::left
       << i->key() << " "
@@ -102,13 +125,13 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
 }
 
 - (void)printXmp {
-   if (xmpData.empty()) {
+   if (_xmpData.empty()) {
       NSLog(@"No XMP data found in the file");
       return;
    }
    
-   for (Exiv2::XmpData::const_iterator md = xmpData.begin();
-        md != xmpData.end(); ++md) {
+   for (Exiv2::XmpData::const_iterator md = _xmpData.begin();
+        md != _xmpData.end(); ++md) {
       std::cout << std::setfill(' ') << std::left
       << std::setw(44)
       << md->key() << " "
@@ -123,13 +146,13 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
 }
 
 - (void)printIpct {
-   if (iptcData.empty()) {
+   if (_iptcData.empty()) {
       NSLog(@"No IPTC data found in the file");
       return;
    }
    
-   Exiv2::IptcData::iterator end = iptcData.end();
-   for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md) {
+   Exiv2::IptcData::iterator end = _iptcData.end();
+   for (Exiv2::IptcData::iterator md = _iptcData.begin(); md != end; ++md) {
       std::cout << std::setw(44) << std::setfill(' ') << std::left
       << md->key() << " "
       << "0x" << std::setw(4) << std::setfill('0') << std::right
