@@ -14,6 +14,7 @@
 		B18965321BBC0EB400837DC9 /* Exiv2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B18965311BBC0EB400837DC9 /* Exiv2Tests.m */; };
 		B18965341BBC0EB400837DC9 /* Exiv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B18964FB1BBC0BB900837DC9 /* Exiv2.framework */; settings = {ASSET_TAGS = (); }; };
 		B189653C1BBC0F4700837DC9 /* Photosphere.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B189653B1BBC0F4700837DC9 /* Photosphere.jpg */; settings = {ASSET_TAGS = (); }; };
+		B18965411BBC2B7500837DC9 /* Station.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B18965401BBC2B7500837DC9 /* Station.jpg */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,7 @@
 		B18965311BBC0EB400837DC9 /* Exiv2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Exiv2Tests.m; sourceTree = "<group>"; };
 		B18965331BBC0EB400837DC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B189653B1BBC0F4700837DC9 /* Photosphere.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Photosphere.jpg; sourceTree = "<group>"; };
+		B18965401BBC2B7500837DC9 /* Station.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Station.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				B189653B1BBC0F4700837DC9 /* Photosphere.jpg */,
+				B18965401BBC2B7500837DC9 /* Station.jpg */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -205,6 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B18965411BBC2B7500837DC9 /* Station.jpg in Resources */,
 				B189653C1BBC0F4700837DC9 /* Photosphere.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -409,6 +413,7 @@
 				B18965051BBC0BB900837DC9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B18965371BBC0EB400837DC9 /* Build configuration list for PBXNativeTarget "Exiv2Tests" */ = {
 			isa = XCConfigurationList;
@@ -417,6 +422,7 @@
 				B18965391BBC0EB400837DC9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -9,6 +9,7 @@
 
 @property (nonatomic, strong) NSArray *exifKeys;
 @property (nonatomic, strong) NSArray *xmpKeys;
+@property (nonatomic, strong) NSArray *iptcKeys;
 
 
 @end

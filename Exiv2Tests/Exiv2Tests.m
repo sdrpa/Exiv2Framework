@@ -7,9 +7,14 @@
 @interface FLTImageMetadata ()
 - (void)printExif;
 - (void)printXmp;
+- (void)printIpct;
 @end
 
 #pragma mark
+
+static NSString * kExifSampleImageFilename = @"Photosphere.jpg";
+static NSString * kXmpSampleImageFilename  = @"Photosphere.jpg";
+static NSString * kIptcSampleImageFilename = @"Station.jpg";
 
 @interface Exiv2Tests : XCTestCase
 
@@ -28,33 +33,45 @@
 }
 
 - (void)testExifKeys {
-   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:@"Photosphere.jpg"];
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
-   NSArray *exifKeys = [metadata exifKeys];
+   NSArray *keys = [metadata exifKeys];
    NSUInteger expectedCount = 28;
-   XCTAssertEqual(expectedCount, [exifKeys count], @"Pass");
+   XCTAssertEqual(expectedCount, [keys count], @"Pass");
 }
 
 - (void)testXmpKeys {
-   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:@"Photosphere.jpg"];
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kXmpSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
-   NSArray *xmpKeys = [metadata xmpKeys];
+   NSArray *keys = [metadata xmpKeys];
    NSUInteger expectedCount = 15;
-   XCTAssertEqual(expectedCount, [xmpKeys count], @"Pass");
+   XCTAssertEqual(expectedCount, [keys count], @"Pass");
+}
+
+- (void)testIptcKeys {
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kIptcSampleImageFilename];
+   FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
+   NSArray *keys = [metadata iptcKeys];
+   NSUInteger expectedCount = 18;
+   XCTAssertEqual(expectedCount, [keys count], @"Pass");
 }
 
 - (void)testPrintExif {
-   //NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"Photosphere" ofType:@"jpg"];
-   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:@"Photosphere.jpg"];
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
    [metadata printExif];
 }
 
 - (void)testPrintXmp {
-   //NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"Photosphere" ofType:@"jpg"];
-   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:@"Photosphere.jpg"];
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kXmpSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
    [metadata printXmp];
+}
+
+- (void)testPrintIpct {
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kIptcSampleImageFilename];
+   FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
+   [metadata printIpct];
 }
 
 @end
