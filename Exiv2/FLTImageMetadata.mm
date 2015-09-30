@@ -121,7 +121,7 @@
 }
 
 /**
- Returns appropriate Objective-C (NSString, NSNumber) value for metadata
+ Returns appropriate Objective-C (NSString, NSNumber, or NSArray for tuples (Rational)) value for metadata
  */
 - (id)valueForExifMetadata:(Exiv2::Exifdatum)metadatum {
    const char *typeName = metadatum.typeName();
@@ -132,9 +132,30 @@
             (strcmp(typeName, "Long") == 0)){
       return @(metadatum.toLong());
    }
+   else if (strcmp(typeName, "Rational") == 0) {
+      NSUInteger count = metadatum.count();
+      NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
+      for (NSUInteger i=0; i<count; i++) {
+         std::pair<int32_t, int32_t> rational = metadatum.toRational(i);
+         double value = (double)rational.first / (double)rational.second;
+         [mutableArray addObject:@(value)];
+      }
+      return [mutableArray copy];
+   }
+   else if (strcmp(typeName, "Undefined") == 0) {
+      NSUInteger count = metadatum.count();
+      NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
+      for (NSUInteger i=0; i<count; i++) {
+         NSString *string = [NSString stringWithCString:metadatum.toString(i).c_str()
+                                               encoding:[NSString defaultCStringEncoding]];
+         [mutableArray addObject:string];
+      }
+      return [mutableArray copy];
+   }
    
-   NSAssert(false, @"Not implemented");
-   return nil;
+   //
+   
+   return [NSString stringWithFormat:@"%s", metadatum.toString().c_str()];;
 }
 
 #pragma mark -

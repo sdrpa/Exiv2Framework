@@ -72,6 +72,22 @@ static NSString * kIptcSampleImageFilename = @"Station.jpg";
    XCTAssertTrue([tag isEqual:@(148)]);
 }
 
+- (void)testvalueForKeyMetadataTypeWhereReturnValueIsRational {
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
+   FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
+   NSArray *array = [metadata valueForMetadataKey:@"Exif.GPSInfo.GPSLatitude"];
+   NSArray *expected = @[@35.0, @32.0, @11.41];
+   XCTAssertEqualObjects(expected, array, @"Pass");
+}
+
+- (void)testvalueForKeyMetadataTypeWhereReturnValueIsUndefined {
+   NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
+   FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
+   NSArray *array = [metadata valueForMetadataKey:@"Exif.Photo.ExifVersion"];
+   NSArray *expected = @[@"48", @"50", @"50", @"49"];
+   XCTAssertEqualObjects(expected, array, @"Pass");
+}
+
 #pragma mark
 
 - (void)testPrintExif {
