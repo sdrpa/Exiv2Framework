@@ -72,9 +72,38 @@
 }
 
 /**
- Return value for metadata property
+ Return value for metadata property or nil if the value for key doesn't exist
  */
-- (id)valueForKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType {
+- (id)valueForMetadataKey:(NSString *)key {
+   Exiv2Metadata metadataType = [self metadataTypeForKey:key];
+   return (metadataType != Exiv2MetadataUnknown) ? [self valueForMetadataKey:key metadataType:metadataType] : nil;
+}
+
+- (Exiv2Metadata)metadataTypeForKey:(NSString *)key {
+   Exiv2Metadata metadataType = Exiv2MetadataUnknown;
+   for (NSString *exifKey in [self exifKeys]) {
+      if ([key isEqualToString:exifKey]) {
+         return Exiv2MetadataExif;
+      }
+   }
+   for (NSString *xmpKey in [self xmpKeys]) {
+      if ([key isEqualToString:xmpKey]) {
+         return Exiv2MetadataXmp;
+      }
+   }
+   for (NSString *iptcKey in [self iptcKeys]) {
+      if ([key isEqualToString:iptcKey]) {
+         return Exiv2MetadataIptc;
+      }
+   }
+   
+   return metadataType;
+}
+
+/**
+ Return value for metadata property or nil if the value for key doesn't exist
+ */
+- (id)valueForMetadataKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType {
    switch (metadataType) {
       case Exiv2MetadataExif:
          return [self valueForExifMetadata:_exifData[key.UTF8String]];
@@ -87,6 +116,9 @@
    }
 }
 
+/**
+ Returns appropriate Objective-C (NSString, NSNumber) value for metadata
+ */
 - (id)valueForExifMetadata:(Exiv2::Exifdatum)metadatum {
    const char *typeName = metadatum.typeName();
    if (strcmp(typeName, "Ascii") == 0) {
@@ -96,6 +128,8 @@
             (strcmp(typeName, "Long") == 0)){
       return @(metadatum.toLong());
    }
+   
+   NSAssert(false, @"Not implemented");
    return nil;
 }
 

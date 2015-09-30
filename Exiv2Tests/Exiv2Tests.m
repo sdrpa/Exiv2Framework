@@ -58,17 +58,17 @@ static NSString * kIptcSampleImageFilename = @"Station.jpg";
 
 #pragma mark
 
-- (void)testvalueForKeyMetadataTypeWhereReturnValueIsString {
+- (void)testvalueForMetadataKeyWhereReturnValueIsString {
    NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
-   NSString *make = [metadata valueForKey:@"Exif.Image.Make" metadataType:Exiv2MetadataExif];
+   NSString *make = [metadata valueForMetadataKey:@"Exif.Image.Make"];
    XCTAssertTrue([make isEqualToString:@"Apple"]);
 }
 
 - (void)testvalueForKeyMetadataTypeWhereReturnValueIsNumber {
    NSURL *imageURL = [[[NSBundle bundleForClass:[self class]] resourceURL] URLByAppendingPathComponent:kExifSampleImageFilename];
    FLTImageMetadata *metadata = [[FLTImageMetadata alloc] initWithImageAtURL:imageURL];
-   NSNumber *tag = [metadata valueForKey:@"Exif.Image.ExifTag" metadataType:Exiv2MetadataExif];
+   NSNumber *tag = [metadata valueForMetadataKey:@"Exif.Image.ExifTag"];
    XCTAssertTrue([tag isEqual:@(148)]);
 }
 

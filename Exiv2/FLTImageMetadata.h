@@ -4,7 +4,8 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
-   Exiv2MetadataExif = 1,
+   Exiv2MetadataUnknown,
+   Exiv2MetadataExif,
    Exiv2MetadataXmp,
    Exiv2MetadataIptc
 };
@@ -17,6 +18,7 @@ typedef NS_ENUM(NSUInteger, Exiv2Metadata) {
 @property (nonatomic, strong) NSArray *xmpKeys;
 @property (nonatomic, strong) NSArray *iptcKeys;
 
-- (id)valueForKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType;
+- (id)valueForMetadataKey:(NSString *)key;
+- (id)valueForMetadataKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType;
 
 @end
