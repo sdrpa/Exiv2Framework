@@ -20,6 +20,10 @@
 
 @implementation FLTImageMetadata
 
+- (instancetype)init {
+   @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Use initWithImageAtURL:" userInfo:nil];
+}
+
 - (instancetype)initWithImageAtURL:(NSURL *)imageURL {
    self = [super init];
    if (self) {
@@ -72,7 +76,7 @@
 }
 
 /**
- Return value for metadata property or nil if the value for key doesn't exist
+ Returns value for metadata property or nil if the value for key doesn't exist
  */
 - (id)valueForMetadataKey:(NSString *)key {
    Exiv2Metadata metadataType = [self metadataTypeForKey:key];
@@ -101,7 +105,7 @@
 }
 
 /**
- Return value for metadata property or nil if the value for key doesn't exist
+ Returns value for metadata property or nil if the value for key doesn't exist
  */
 - (id)valueForMetadataKey:(NSString *)key metadataType:(Exiv2Metadata)metadataType {
    switch (metadataType) {
