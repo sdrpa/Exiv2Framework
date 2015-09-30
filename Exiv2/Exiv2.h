@@ -1,10 +1,5 @@
-//
-//  Exiv2.h
-//  Exiv2
-//
-//  Created by Sinisa Drpa on 9/30/15.
-//  Copyright © 2015 Tagtaxa. All rights reserved.
-//
+
+// Created by Sinisa Drpa on 9/30/15.
 
 #import <Cocoa/Cocoa.h>
 

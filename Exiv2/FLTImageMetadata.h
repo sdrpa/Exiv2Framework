@@ -6,6 +6,9 @@
 @interface FLTImageMetadata : NSObject
 
 - (instancetype)initWithImageAtURL:(NSURL *)fileURL;
-- (void)printEXIF;
+
+@property (nonatomic, strong) NSArray *exifKeys;
+@property (nonatomic, strong) NSArray *xmpKeys;
+
 
 @end
