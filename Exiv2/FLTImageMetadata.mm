@@ -126,36 +126,49 @@
 - (id)valueForExifMetadata:(Exiv2::Exifdatum)metadatum {
    const char *typeName = metadatum.typeName();
    if (strcmp(typeName, "Ascii") == 0) {
-      return [NSString stringWithFormat:@"%s", metadatum.toString().c_str()];
+      return [self valueForAsciiTypeWithMetadata:metadatum];
    }
-   else if ((strcmp(typeName, "Short") == 0) ||
-            (strcmp(typeName, "Long") == 0)){
-      return @(metadatum.toLong());
+   else if ((strcmp(typeName, "Short") == 0) || (strcmp(typeName, "Long") == 0)) {
+      return [self valueForShortLongTypeWithMetadata:metadatum];
    }
    else if (strcmp(typeName, "Rational") == 0) {
-      NSUInteger count = metadatum.count();
-      NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
-      for (NSUInteger i=0; i<count; i++) {
-         std::pair<int32_t, int32_t> rational = metadatum.toRational(i);
-         double value = (double)rational.first / (double)rational.second;
-         [mutableArray addObject:@(value)];
-      }
-      return [mutableArray copy];
+      return [self valueForRationalTypeWithMetadata:metadatum];
    }
    else if (strcmp(typeName, "Undefined") == 0) {
-      NSUInteger count = metadatum.count();
-      NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
-      for (NSUInteger i=0; i<count; i++) {
-         NSString *string = [NSString stringWithCString:metadatum.toString(i).c_str()
-                                               encoding:[NSString defaultCStringEncoding]];
-         [mutableArray addObject:string];
-      }
-      return [mutableArray copy];
+      return [self valueForUndefinedTypeWithMetadata:metadatum];
    }
    
-   //
-   
    return [NSString stringWithFormat:@"%s", metadatum.toString().c_str()];;
+}
+
+- (NSString *)valueForAsciiTypeWithMetadata:(Exiv2::Exifdatum)metadatum {
+   return [NSString stringWithFormat:@"%s", metadatum.toString().c_str()];
+}
+
+- (NSNumber *)valueForShortLongTypeWithMetadata:(Exiv2::Exifdatum)metadatum {
+   return @(metadatum.toLong());
+}
+
+- (NSArray *)valueForRationalTypeWithMetadata:(Exiv2::Exifdatum)metadatum {
+   NSUInteger count = metadatum.count();
+   NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
+   for (NSUInteger i=0; i<count; i++) {
+      std::pair<int32_t, int32_t> rational = metadatum.toRational(i);
+      double value = (double)rational.first / (double)rational.second;
+      [mutableArray addObject:@(value)];
+   }
+   return [mutableArray copy];
+}
+
+- (NSArray *)valueForUndefinedTypeWithMetadata:(Exiv2::Exifdatum)metadatum {
+   NSUInteger count = metadatum.count();
+   NSMutableArray *mutableArray = [NSMutableArray arrayWithCapacity:count];
+   for (NSUInteger i=0; i<count; i++) {
+      NSString *string = [NSString stringWithCString:metadatum.toString(i).c_str()
+                                            encoding:[NSString defaultCStringEncoding]];
+      [mutableArray addObject:string];
+   }
+   return [mutableArray copy];
 }
 
 #pragma mark -
